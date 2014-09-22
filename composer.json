@@ -1,5 +1,5 @@
 {
-    "name": "Profideo/behat",
+    "name": "profideo/behat",
     "description": "Profideo behat tools",
     "license": "Apache-2.0",
     "type": "project",
