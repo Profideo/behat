@@ -258,7 +258,6 @@ class FeatureContext extends BehatContext
         return $this->getSubcontext('mink')->getSession();
     }
 
-
     /**
      * @Given /^(?:|que )l\'élément "([^"]*)" a la propriété "([^"]*)" avec la valeur "([^"]*)"$/
      */
@@ -302,7 +301,7 @@ class FeatureContext extends BehatContext
                 sprintf("Le motif de date %s n'a pas été trouvé dans l'élément %s", $pattern, $cssSelector)
             );
         }
-        if (time() - \DateTime::createFromFormat('d/m/Y H:i:s', $matches[0])->getTimestamp() > $approximation )  {
+        if (time() - \DateTime::createFromFormat('d/m/Y H:i:s', $matches[0])->getTimestamp() > $approximation ) {
             throw new \PHPUnit_Framework_ExpectationFailedException(
                 sprintf("La date %s se trouvant dans l'élément %s est en dehors de l'approximation de(s) %d seconde(s)",
                     $matches[0],
@@ -312,7 +311,7 @@ class FeatureContext extends BehatContext
             );
         }
     }
-    
+
     /**
      * @Then /^l'élément "([^"]*)" devrait contenir la date courante$/
      */
@@ -326,7 +325,7 @@ class FeatureContext extends BehatContext
                 sprintf("Le motif de date %s n'a pas été trouvé dans l'élément", $pattern, $cssSelector)
             );
         }
-        
+
         \PHPUnit_Framework_Assert::assertEquals(date('d/m/Y'), $matches[0]);
     }
 
