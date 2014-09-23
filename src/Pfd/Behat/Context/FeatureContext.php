@@ -27,7 +27,7 @@ use WebDriver\Key;
 use Behat\Mink\Element\NodeElement;
 
 /**
- * Useful behat feature contexts
+ * Useful behat feature contexts and methods
  */
 class FeatureContext extends BehatContext
 {
@@ -37,16 +37,24 @@ class FeatureContext extends BehatContext
     }
 
     /**
-     * @Given /^(?:|que )je suis connecté avec le pseudo "([^"]*)" et le mot de passe "([^"]*)"$/
+     * Returns generic login steps
+     *
+     * @param string $loginLabel    Login label
+     * @param string $login         Login value
+     * @param string $passwordLabel Password label
+     * @param string $password      Password value
+     * @param string $submitLabel   Submit label
+     *
+     * @return array
      */
-    public function queJeSuisConnecteEnTantQue($login, $password)
+    public function getLoginSteps($loginLabel, $login, $passwordLabel, $password, $submitLabel)
     {
-        return array(
+        return [
             new Step\Given('je suis sur "/login"'),
-            new Step\When(sprintf('je remplis "Utilisateur" avec "%s"', $login)),
-            new Step\When(sprintf('je remplis "Mot de passe" avec "%s"', $password)),
-            new Step\When('je presse "Valider"'),
-        );
+            new Step\When(sprintf('je remplis "%s" avec "%s"', $loginLabel, $login)),
+            new Step\When(sprintf('je remplis "%s" avec "%s"', $passwordLabel, $password)),
+            new Step\When(sprintf('je presse "%s"', $submitLabel)),
+        ];
     }
 
     /**
