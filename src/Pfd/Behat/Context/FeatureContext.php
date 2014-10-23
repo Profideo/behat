@@ -19,7 +19,6 @@
 namespace Pfd\Behat\Context;
 
 use Behat\Behat\Context\BehatContext;
-use Behat\Behat\Context\Step;
 use Behat\MinkExtension\Context\MinkContext;
 use Behat\Mink\Session;
 use Behat\Mink\Exception\ElementNotFoundException;
@@ -37,24 +36,24 @@ class FeatureContext extends BehatContext
     }
 
     /**
-     * Returns generic login steps
+     * Login a user in "/login" page
      *
-     * @param string $loginLabel    Login label
-     * @param string $login         Login value
-     * @param string $passwordLabel Password label
-     * @param string $password      Password value
-     * @param string $submitLabel   Submit label
+     * @param string $loginLabel    Login form label
+     * @param string $login         User login
+     * @param string $passwordLabel Password form label
+     * @param string $password      User password
+     * @param string $submitLabel   Submit form label
      *
      * @return array
      */
-    public function getLoginSteps($loginLabel, $login, $passwordLabel, $password, $submitLabel)
+    public function login($loginLabel, $login, $passwordLabel, $password, $submitLabel)
     {
-        return [
-            new Step\Given('je suis sur "/login"'),
-            new Step\When(sprintf('je remplis "%s" avec "%s"', $loginLabel, $login)),
-            new Step\When(sprintf('je remplis "%s" avec "%s"', $passwordLabel, $password)),
-            new Step\When(sprintf('je presse "%s"', $submitLabel)),
-        ];
+        $minkContext = $this->getSubcontext('mink');
+
+        $minkContext->visit('/login');
+        $minkContext->fillField($loginLabel, $login);
+        $minkContext->fillField($passwordLabel, $password);
+        $minkContext->pressButton($submitLabel);
     }
 
     /**
