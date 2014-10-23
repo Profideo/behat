@@ -59,7 +59,7 @@ class FeatureContext extends BehatContext
     /**
      * @Given /^(?:|que )j'attends quelques secondes$/
      */
-    public function waitSomeSeconds()
+    public function jAttendsQuelquesSecondes()
     {
         $this->getMinkSession()->wait(30000, '(0 === jQuery.active)');
     }
@@ -67,7 +67,7 @@ class FeatureContext extends BehatContext
     /**
      * @Given /^(?:|que )j'attends (?P<num>\d+) secondes?$/
      */
-    public function waitSeconds($num)
+    public function jAttendsSecondes($num)
     {
         $this->getMinkSession()->wait($num * 1000);
     }
@@ -100,7 +100,7 @@ class FeatureContext extends BehatContext
     /**
      * @Given /^(?:|que )je clic sur l'élément "([^"]*)"$/
      */
-    public function clickOnElementWithCssSelector($cssSelector)
+    public function jeClicSurLElement($cssSelector)
     {
         $this->getElementWithCssSelector($cssSelector)->click();
     }
@@ -108,7 +108,7 @@ class FeatureContext extends BehatContext
     /**
      * @Given /^(?:|que )je sélectionne "([^"]*)" depuis l\'élément "([^"]*)"$/
      */
-    public function selectOptionOfElementWithCssSelector($option, $cssSelector)
+    public function jeSelectionneDepuisLElement($option, $cssSelector)
     {
         $this->getElementWithCssSelector($cssSelector)->selectOption($option, false);
     }
@@ -154,7 +154,7 @@ class FeatureContext extends BehatContext
      *
      * @return bool
      */
-    public function assertPopupMessage($message)
+    public function jeDevraisVoirDansLaPopup($message)
     {
         $element = $this->getMinkSession()->getPage()->findById('__alert_container__');
 
@@ -178,7 +178,7 @@ class FeatureContext extends BehatContext
     /**
      * @Given /^(?:|que )l\'option "([^"]*)" devrait être sélectionnée dans "([^"]*)"$/
      */
-    public function inShouldBeSelectedWithCssSelector($optionValue, $cssSelector)
+    public function lOptionDevraitEtreSelectionneeDans($optionValue, $cssSelector)
     {
         $selectElement = $this->getElementWithCssSelector($cssSelector);
         $optionElement = $selectElement->find('named', array('option', "\"{$optionValue}\""));
@@ -189,7 +189,7 @@ class FeatureContext extends BehatContext
     /**
      * @Given /^(?:|que )je devrais voir l\'élément correspondant au xpath "([^"]*)"$/
      */
-    public function elementExistsWithXpath($element)
+    public function jeDevraisVoirLElementCorrespondantAuXpath($element)
     {
         $this->getSubcontext('mink')->assertSession()->elementExists('xpath', $element);
     }
@@ -197,7 +197,7 @@ class FeatureContext extends BehatContext
     /**
      * @Given /^(?:|que )je devrais voir (\d+) éléments? correspondant au xpath "([^"]*)"$/
      */
-    public function elementsCountWithXpath($num, $element)
+    public function jeDevraisVoirElementsCorrespondantAuXpath($num, $element)
     {
         $this->getSubcontext('mink')->assertSession()->elementsCount('xpath', $element, intval($num));
     }
@@ -260,7 +260,7 @@ class FeatureContext extends BehatContext
     /**
      * @Given /^(?:|que )l\'élément "([^"]*)" a la propriété "([^"]*)" avec la valeur "([^"]*)"$/
      */
-    public function elementHasPropertyValue($element, $property, $value)
+    public function lElementALaProprieteAvecLaValeur($element, $property, $value)
     {
         $element = $this->getElementWithCssSelector($element);
         $nodeElement = new NodeElement($element->getXpath(), $this->getMinkSession());
@@ -271,7 +271,7 @@ class FeatureContext extends BehatContext
     /**
      * @Given /^(?:|que )l\'élément "([^"]*)" n'a pas la propriété "([^"]*)" avec la valeur "([^"]*)"$/
      */
-    public function elementHasNotPropertyValue($element, $property, $value)
+    public function lElementNAPasLaProprieteAvecLaValeur($element, $property, $value)
     {
         $element = $this->getElementWithCssSelector($element);
         $nodeElement = new NodeElement($element->getXpath(), $this->getMinkSession());
