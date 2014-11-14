@@ -36,21 +36,22 @@ class FeatureContext extends BehatContext
     }
 
     /**
-     * Login a user in "/login" page
+     * Login a user
      *
      * @param string $loginLabel    Login form label
      * @param string $login         User login
      * @param string $passwordLabel Password form label
      * @param string $password      User password
      * @param string $submitLabel   Submit form label
+     * @param string $page          Path of the login form
      *
      * @return array
      */
-    public function login($loginLabel, $login, $passwordLabel, $password, $submitLabel)
+    public function login($loginLabel, $login, $passwordLabel, $password, $submitLabel, $page = '/login')
     {
         $minkContext = $this->getSubcontext('mink');
 
-        $minkContext->visit('/login');
+        $minkContext->visit($page);
         $minkContext->fillField($loginLabel, $login);
         $minkContext->fillField($passwordLabel, $password);
         $minkContext->pressButton($submitLabel);
