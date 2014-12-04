@@ -149,7 +149,7 @@ class FeatureContext extends BehatContext
     }
 
     /**
-     * @When /^(?:|je )devrais voir "([^"]*)" dans la popup$/
+     * @Then /^(?:|je )devrais voir "([^"]*)" dans la popup$/
      *
      * @param string $message The message.
      *
@@ -177,7 +177,7 @@ class FeatureContext extends BehatContext
     }
 
     /**
-     * @Given /^(?:|que )l\'option "([^"]*)" devrait être sélectionnée dans "([^"]*)"$/
+     * @Then /^(?:|que )l\'option "([^"]*)" devrait être sélectionnée dans "([^"]*)"$/
      */
     public function lOptionDevraitEtreSelectionneeDans($optionValue, $cssSelector)
     {
@@ -188,7 +188,7 @@ class FeatureContext extends BehatContext
     }
 
     /**
-     * @Given /^(?:|que )je devrais voir l\'élément correspondant au xpath "([^"]*)"$/
+     * @Then /^(?:|que )je devrais voir l\'élément correspondant au xpath "([^"]*)"$/
      */
     public function jeDevraisVoirLElementCorrespondantAuXpath($element)
     {
@@ -196,7 +196,7 @@ class FeatureContext extends BehatContext
     }
 
     /**
-     * @Given /^(?:|que )je devrais voir (\d+) éléments? correspondant au xpath "([^"]*)"$/
+     * @Then /^(?:|que )je devrais voir (\d+) éléments? correspondant au xpath "([^"]*)"$/
      */
     public function jeDevraisVoirElementsCorrespondantAuXpath($num, $element)
     {
@@ -259,7 +259,7 @@ class FeatureContext extends BehatContext
     }
 
     /**
-     * @Given /^(?:|que )l\'élément "([^"]*)" a la propriété "([^"]*)" avec la valeur "([^"]*)"$/
+     * @Then /^(?:|que )l\'élément "([^"]*)" a la propriété "([^"]*)" avec la valeur "([^"]*)"$/
      */
     public function lElementALaProprieteAvecLaValeur($element, $property, $value)
     {
@@ -270,7 +270,7 @@ class FeatureContext extends BehatContext
     }
 
     /**
-     * @Given /^(?:|que )l\'élément "([^"]*)" n'a pas la propriété "([^"]*)" avec la valeur "([^"]*)"$/
+     * @Then /^(?:|que )l\'élément "([^"]*)" n'a pas la propriété "([^"]*)" avec la valeur "([^"]*)"$/
      */
     public function lElementNAPasLaProprieteAvecLaValeur($element, $property, $value)
     {
