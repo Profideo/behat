@@ -18,9 +18,7 @@
 
 namespace Pfd\Behat\Context;
 
-use Behat\Behat\Context\BehatContext;
 use Behat\MinkExtension\Context\MinkContext;
-use Behat\Mink\Session;
 use Behat\Mink\Exception\ElementNotFoundException;
 use WebDriver\Key;
 use Behat\Mink\Element\NodeElement;
@@ -29,11 +27,14 @@ use Behat\Mink\Exception\UnsupportedDriverActionException;
 /**
  * Useful behat feature contexts and methods
  */
-class FeatureContext extends BehatContext
+class FeatureContext extends MinkContext
 {
-    public function __construct()
+    /**
+     * @Given /^que je suis connecté avec le pseudo "([^"]*)" et le mot de passe "([^"]*)"$/
+     */
+    public function queJeSuisConnecteEnTantQue($login, $password)
     {
-        $this->useContext('mink', new MinkContext());
+        $this->login('Utilisateur', $login, 'Mot de passe', $password, 'Valider');
     }
 
     /**
@@ -48,14 +49,12 @@ class FeatureContext extends BehatContext
      *
      * @return array
      */
-    public function login($loginLabel, $login, $passwordLabel, $password, $submitLabel, $page = '/login')
+    protected function login($loginLabel, $login, $passwordLabel, $password, $submitLabel, $page = '/login')
     {
-        $minkContext = $this->getSubcontext('mink');
-
-        $minkContext->visit($page);
-        $minkContext->fillField($loginLabel, $login);
-        $minkContext->fillField($passwordLabel, $password);
-        $minkContext->pressButton($submitLabel);
+        $this->visit($page);
+        $this->fillField($loginLabel, $login);
+        $this->fillField($passwordLabel, $password);
+        $this->pressButton($submitLabel);
     }
 
     /**
@@ -63,7 +62,7 @@ class FeatureContext extends BehatContext
      */
     public function jAttendsQuelquesSecondes()
     {
-        $this->getMinkSession()->wait(30000, '(0 === jQuery.active)');
+        $this->getSession()->wait(30000, '(0 === jQuery.active)');
     }
 
     /**
@@ -71,7 +70,7 @@ class FeatureContext extends BehatContext
      */
     public function jAttendsSecondes($num)
     {
-        $this->getMinkSession()->wait($num * 1000);
+        $this->getSession()->wait($num * 1000);
     }
 
     /**
@@ -79,24 +78,24 @@ class FeatureContext extends BehatContext
      */
     public function jeSelectionneStrictementDepuis($arg1, $arg2)
     {
-        $this->getMinkSession()->getDriver()->wait(2000, false);
+        $this->getSession()->getDriver()->wait(2000, false);
         $element = $this->getVisibleField($arg2);
 
         if (false === $element) {
             throw new ElementNotFoundException(
-            $this->getMinkSession()
+            $this->getSession()
             );
         }
 
-        $option = $element->find('xpath', sprintf('//option[. = %s]', '"' . $arg1 . '"'));
+        $option = $element->find('xpath', sprintf('//option[. = %s]', '"'.$arg1.'"'));
 
-        if ( !is_object($option)) {
+        if (!is_object($option)) {
             throw new ElementNotFoundException(
-                $this->getMinkSession()
+                $this->getSession()
             );
         }
 
-        $this->getMinkSession()->getDriver()->selectOption($element->getXpath(), $option->getAttribute('value'));
+        $this->getSession()->getDriver()->selectOption($element->getXpath(), $option->getAttribute('value'));
     }
 
     /**
@@ -120,7 +119,7 @@ class FeatureContext extends BehatContext
      */
     public function behatRefuseLesPopups()
     {
-        $this->getMinkSession()->executeScript('
+        $this->getSession()->executeScript('
             window.alert = window.confirm = function (msg) {
                 document.getElementById("__alert_container__").innerHTML = msg;
 
@@ -137,7 +136,7 @@ class FeatureContext extends BehatContext
      */
     public function behatAccepteLesPopups()
     {
-        $this->getMinkSession()->executeScript('
+        $this->getSession()->executeScript('
             window.alert = window.confirm = function (msg) {
                 document.getElementById("__alert_container__").innerHTML = msg;
 
@@ -158,7 +157,7 @@ class FeatureContext extends BehatContext
      */
     public function jeDevraisVoirDansLaPopup($message)
     {
-        $element = $this->getMinkSession()->getPage()->findById('__alert_container__');
+        $element = $this->getSession()->getPage()->findById('__alert_container__');
 
         return $message == $element->getHtml();
     }
@@ -168,7 +167,7 @@ class FeatureContext extends BehatContext
      */
     public function jeSurvole($selector)
     {
-        $element = $this->getMinkSession()->getPage()->find('css', $selector);
+        $element = $this->getSession()->getPage()->find('css', $selector);
 
         if (null === $element) {
             throw new \InvalidArgumentException(sprintf('Could not evaluate CSS selector: "%s"', $selector));
@@ -193,7 +192,7 @@ class FeatureContext extends BehatContext
      */
     public function jeDevraisVoirLElementCorrespondantAuXpath($element)
     {
-        $this->getSubcontext('mink')->assertSession()->elementExists('xpath', $element);
+        $this->assertSession()->elementExists('xpath', $element);
     }
 
     /**
@@ -201,7 +200,7 @@ class FeatureContext extends BehatContext
      */
     public function jeDevraisVoirElementsCorrespondantAuXpath($num, $element)
     {
-        $this->getSubcontext('mink')->assertSession()->elementsCount('xpath', $element, intval($num));
+        $this->assertSession()->elementsCount('xpath', $element, intval($num));
     }
 
     /**
@@ -209,12 +208,12 @@ class FeatureContext extends BehatContext
      */
     public function jeVideLeChamp($field)
     {
-        $this->getSubcontext('mink')->fillField($field, Key::BACKSPACE);
+        $this->fillField($field, Key::BACKSPACE);
     }
 
     protected function getElementWithCssSelector($cssSelector)
     {
-        $session = $this->getMinkSession();
+        $session = $this->getSession();
         $element = $session->getPage()->find(
             'xpath',
             $session->getSelectorsHandler()->selectorToXpath('css', $cssSelector)
@@ -235,9 +234,9 @@ class FeatureContext extends BehatContext
      */
     protected function getVisibleField($locator)
     {
-        $page = $this->getMinkSession()->getPage();
+        $page = $this->getSession()->getPage();
         $elements = $page->findAll('named', array(
-            'field', $page->getSession()->getSelectorsHandler()->xpathLiteral($locator)
+            'field', $page->getSession()->getSelectorsHandler()->xpathLiteral($locator),
         ));
         $element  = false;
 
@@ -252,20 +251,12 @@ class FeatureContext extends BehatContext
     }
 
     /**
-     * @return Session
-     */
-    public function getMinkSession()
-    {
-        return $this->getSubcontext('mink')->getSession();
-    }
-
-    /**
      * @Then /^(?:|que )l\'élément "([^"]*)" a la propriété "([^"]*)" avec la valeur "([^"]*)"$/
      */
     public function lElementALaProprieteAvecLaValeur($element, $property, $value)
     {
         $element = $this->getElementWithCssSelector($element);
-        $nodeElement = new NodeElement($element->getXpath(), $this->getMinkSession());
+        $nodeElement = new NodeElement($element->getXpath(), $this->getSession());
 
         return $nodeElement->getAttribute($property) === $value;
     }
@@ -276,7 +267,7 @@ class FeatureContext extends BehatContext
     public function lElementNAPasLaProprieteAvecLaValeur($element, $property, $value)
     {
         $element = $this->getElementWithCssSelector($element);
-        $nodeElement = new NodeElement($element->getXpath(), $this->getMinkSession());
+        $nodeElement = new NodeElement($element->getXpath(), $this->getSession());
 
         return (!$nodeElement->hasAttribute($property)) || ($nodeElement->getAttribute($property) !== $value);
     }
@@ -286,7 +277,7 @@ class FeatureContext extends BehatContext
      */
     public function jeVaisSurLaFenetre($name)
     {
-        $this->getMinkSession()->switchToWindow($name);
+        $this->getSession()->switchToWindow($name);
     }
 
     /**
@@ -302,7 +293,7 @@ class FeatureContext extends BehatContext
                 sprintf("Le motif de date %s n'a pas été trouvé dans l'élément %s", $pattern, $cssSelector)
             );
         }
-        if (time() - \DateTime::createFromFormat('d/m/Y H:i:s', $matches[0])->getTimestamp() > $approximation ) {
+        if (time() - \DateTime::createFromFormat('d/m/Y H:i:s', $matches[0])->getTimestamp() > $approximation) {
             throw new \PHPUnit_Framework_ExpectationFailedException(
                 sprintf("La date %s se trouvant dans l'élément %s est en dehors de l'approximation de(s) %d seconde(s)",
                     $matches[0],
@@ -341,10 +332,10 @@ class FeatureContext extends BehatContext
      */
     private function getRadioButton($label)
     {
-        $radioButton = $this->getMinkSession()->getPage()->findField($label);
+        $radioButton = $this->getSession()->getPage()->findField($label);
 
         if (null === $radioButton) {
-            throw new ElementNotFoundException($this->getMinkSession(), 'form field', 'id|name|label|value', $label);
+            throw new ElementNotFoundException($this->getSession(), 'form field', 'id|name|label|value', $label);
         }
 
         return $radioButton;
@@ -363,7 +354,7 @@ class FeatureContext extends BehatContext
     {
         $radioButton = $this->getRadioButton($label);
 
-        $this->getMinkSession()->getDriver()->click($radioButton->getXPath());
+        $this->getSession()->getDriver()->click($radioButton->getXPath());
     }
 
     /**
@@ -432,9 +423,9 @@ class FeatureContext extends BehatContext
      */
     protected function elementIsDisabled($type, $locator)
     {
-        $session = $this->getMinkSession();
+        $session = $this->getSession();
         $element = $session->getPage()->find('named', array(
-            $type, $session->getSelectorsHandler()->xpathLiteral($locator)
+            $type, $session->getSelectorsHandler()->xpathLiteral($locator),
         ));
 
         if (null === $element) {
@@ -454,7 +445,7 @@ class FeatureContext extends BehatContext
     public function driverSupportsJs()
     {
         try {
-            $this->getMinkSession()->getDriver()->evaluateScript('');
+            $this->getSession()->getDriver()->evaluateScript('');
         } catch (UnsupportedDriverActionException $exception) {
             return false;
         }
