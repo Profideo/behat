@@ -24,6 +24,7 @@ use Behat\Mink\Session;
 use Behat\Mink\Exception\ElementNotFoundException;
 use WebDriver\Key;
 use Behat\Mink\Element\NodeElement;
+use Behat\Mink\Exception\UnsupportedDriverActionException;
 
 /**
  * Useful behat feature contexts and methods
@@ -443,5 +444,21 @@ class FeatureContext extends BehatContext
         }
 
         return $element->hasAttribute('disabled');
+    }
+
+    /**
+     * Checks if current mink driver used supports javascript
+     *
+     * @return boolean
+     */
+    public function driverSupportsJs()
+    {
+        try {
+            $this->getMinkSession()->getDriver()->evaluateScript('');
+        } catch (UnsupportedDriverActionException $exception) {
+            return false;
+        }
+
+        return true;
     }
 }
