@@ -150,6 +150,14 @@ class FeatureContext extends BehatContext
     }
 
     /**
+     * @Given /^(?:|que )behat confirme quitter la page$/
+     */
+    public function behatConfirmeQuitterLaPage()
+    {
+        $this->getMinkSession()->executeScript('window.onbeforeunload = function() { return null; };');
+    }
+
+    /**
      * @Then /^(?:|je )devrais voir "([^"]*)" dans la popup$/
      *
      * @param string $message The message.
